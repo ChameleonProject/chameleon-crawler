@@ -1,6 +1,6 @@
 # morph-crawler
 
-Crawler made with Selenium to parse Facebook to collect some data of profiles without invade the user privacy.
+Crawler made with Selenium to crawl Facebook to parse some data of profiles without invade the user privacy.
 
 We use all collected information to make a data_set to predict fake profiles, possible used by pedofiles, using [Chameleon-IA](https://github.com/ChameleonProject/chameleon-AI).
 
