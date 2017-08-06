@@ -13,61 +13,55 @@ import auth_settings
 class Crawler:
 
 	def __init__(self):
-		self._proxies = []
-		self._nav = []
-		self._elements = []
-		self.get_proxies('proxies.txt')
+		self._driver = None
+		self._wait = None
 		self._headers = 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36'
 
-
-	def get_proxies(self,file_name):
-		with open(file_name,'r') as f:
-			for line in f:
-				self._proxies.append(line.strip())
-
-	def walk(self, target, element, wait):
-		try:
-			wait.until(
-				EC.presence_of_element_located((By.CLASS_NAME, element))
-				)
-			content = driver.find_element_by_class_name(element)
-			print "{} amigos".format(content.text)
-		finally:
-			driver.get(target)
-
-	def crawl(self, url):
-
-		rand = random.SystemRandom()
-		proxy = rand.choice(self._proxies)
-
+	def initialize_webdriver(self):
 		profile = webdriver.FirefoxProfile()
 		profile.set_preference("general.useragent.override", self._headers)
 		
-		driver = webdriver.Firefox(profile)
-		driver.implicitly_wait(30)
-		driver.set_window_size(1180, 980)
+		self._driver = webdriver.Firefox(profile)
+		self._driver.implicitly_wait(30)
+		self._driver.set_window_size(1180, 980)
 
+		self._wait = ui.WebDriverWait(self._driver,10)
 
-		#LOGIN FACEBOOK
-		driver.get(url)
-
-		inputElement = driver.find_element_by_id("email")
-		inputElement.send_keys(auth_settings.login['email'])
-		inputElement = driver.find_element_by_id("pass")
-		inputElement.send_keys(auth_settings.login['password'])
+	def login(self):
+		inputElement = self._driver.find_element_by_id("email")
+		inputElement.send_keys(auth_settings.auth['email'])
+		inputElement = self._driver.find_element_by_id("pass")
+		inputElement.send_keys(auth_settings.auth['password'])
 		inputElement.submit()
 
-		wait = ui.WebDriverWait(driver,10)
-		wait.until(lambda driver: 'welcome' in driver.current_url)
+		self._wait.until(lambda driver: 'welcome' in driver.current_url)
+
+	def get_friends(self, url):
+		try:
+			self._wait.until(
+				EC.presence_of_element_located((By.CLASS_NAME, "_39g5"))
+				)
+			content = self._driver.find_element_by_class_name("_39g5")
+			print "{} amigos".format(content.text)
+		finally:
+			self._driver.get(url)
+
+
+
+	def crawl(self, url):
+
+		self.initialize_webdriver()
+
+		#LOGIN FACEBOOK
+		self._driver.get(url)
+
+		self.login()
 
 		target = "https://www.facebook.com/lindaliukas"
 
-		driver.get(target)
+		self._driver.get(target)
 
-		for tab, el in zip(self._nav, self._elements):
-			walk(target + tab, el wait)
-		
-
+		self.get_friends(target + "/photos_albums")
 
 
 
