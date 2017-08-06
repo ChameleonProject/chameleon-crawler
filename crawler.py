@@ -15,6 +15,7 @@ class Crawler:
 	def __init__(self):
 		self._driver = None
 		self._wait = None
+		self._friends = 0
 		self._headers = 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36'
 
 	def initialize_webdriver(self):
@@ -42,11 +43,29 @@ class Crawler:
 				EC.presence_of_element_located((By.CLASS_NAME, "_39g5"))
 				)
 			content = self._driver.find_element_by_class_name("_39g5")
-			print "{} amigos".format(content.text)
+			result = content.text
+			self._friends = result.replace('.', '')
+		except:
+			self._driver.get(url)
 		finally:
 			self._driver.get(url)
 
 
+	def get_photos(self, url):
+		try:
+			self._wait.until(
+				EC.presence_of_element_located((By.CLASS_NAME, "photoText"))
+				)
+			content = self._driver.find_element_by_class_name("photoText").find_elements_by_xpath('//*[@class="photoTextSubtitle fsm fwn fcg"]')
+			result = []
+			for num in content:
+				if "fotos" in num.text:
+					num = (num.text).replace(' fotos', '')
+					result.append(int(num))
+
+			return sum(result)
+		except:
+			return 0
 
 	def crawl(self, url):
 
@@ -62,6 +81,11 @@ class Crawler:
 		self._driver.get(target)
 
 		self.get_friends(target + "/photos_albums")
+		photos = self.get_photos(target + "/about")
+
+		print self._friends, photos
+
+
 
 
 
