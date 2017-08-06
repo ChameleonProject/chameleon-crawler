@@ -29,3 +29,9 @@ Second, you need to set a [list.txt](https://github.com/ChameleonProject/morph-c
 ## Run ##
 
 `$ python crawler.py`
+
+## Output ##
+
+The data_set will be created like [result.txt](https://github.com/ChameleonProject/morph-crawler/blob/master/results.csv) to input in [Chameleon-IA](https://github.com/ChameleonProject/chameleon-AI).
+
+You can change de format or the data you want to collect, just create similar functions to the one available in this source code.
