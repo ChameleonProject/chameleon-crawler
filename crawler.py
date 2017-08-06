@@ -26,7 +26,7 @@ class Crawler:
 		self._driver.implicitly_wait(30)
 		self._driver.set_window_size(1180, 980)
 
-		self._wait = ui.WebDriverWait(self._driver,10)
+		self._wait = ui.WebDriverWait(self._driver,3)
 
 	def login(self):
 		inputElement = self._driver.find_element_by_id("email")
@@ -81,7 +81,7 @@ class Crawler:
 		self.login()
 
 
-		with open("profiles.txt","r") as f:
+		with open("profiles_real.txt","r") as f:
 			for line in f:
 				
 
@@ -92,7 +92,7 @@ class Crawler:
 				self.get_friends(target + "/photos_albums")
 				photos = self.get_photos(target + "/about")
 
-				s = '"",' + '"",' + '"' +str(self._friends)+ '",' + '"",' + '"' + str(photos) + '",' + '"",' + '"",' + '"1"'
+				s = '"",' + '"",' + '"' +str(self._friends)+ '",' + '"",' + '"' + str(photos) + '",' + '"",' + '"",' + '"0"'
 
 				with open("results.csv","a+") as g:
 					g.write(s+"\n")
