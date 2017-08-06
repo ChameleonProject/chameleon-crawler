@@ -45,6 +45,10 @@ class Crawler:
 			content = self._driver.find_element_by_class_name("_39g5")
 			result = content.text
 			self._friends = result.replace('.', '')
+
+			if(not self._friends.isdigit()):
+				self._friends = 0
+
 		except:
 			self._driver.get(url)
 		finally:
@@ -76,15 +80,22 @@ class Crawler:
 
 		self.login()
 
-		target = "https://www.facebook.com/lindaliukas"
 
-		self._driver.get(target)
+		with open("profiles.txt","r") as f:
+			for line in f:
+				
 
-		self.get_friends(target + "/photos_albums")
-		photos = self.get_photos(target + "/about")
+				target = line.strip()
 
-		print self._friends, photos
+				self._driver.get(target)
 
+				self.get_friends(target + "/photos_albums")
+				photos = self.get_photos(target + "/about")
+
+				s = '"",' + '"",' + '"' +str(self._friends)+ '",' + '"",' + '"' + str(photos) + '",' + '"",' + '"",' + '"1"'
+
+				with open("results.csv","a+") as g:
+					g.write(s+"\n")
 
 
 
